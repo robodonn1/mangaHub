@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Главная страница</title>
+</head>
+
+<body>
+
+    <div>
+        <h1>Добро пожаловать в MangaHub</h1>
+
+        <div class="Account">
+            <div class="noAccount">
+                <form action="/registration" method="get"><button type="submit">Зарегистрироваться</button></form>
+                <form action="/authorization" method="get"><button type="submit">Авторизоваться</button></form>
+            </div>
+            <div class="hasAccount">
+                <form action="/profile" method="get"><button type="submit">Перейти в профиль</button></form>
+                <form action="/logout" method="post"><button type="submit">Выйти из аккаунта</button></form>
+            </div>
+        </div>
+
+
+    </div>
+
+</body>
+
+</html>

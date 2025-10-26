@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Авторизация</title>
+</head>
+
+<body>
+
+    <div>
+        <h1>Страница Авторизации</h1>
+
+        <form action="/authorization" method="post">
+            <input type="email" name="email" id="email" placeholder="Почта" required
+                pattern="/^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/">
+            <input type="password" name="password" id="password" placeholder="Пароль" required minlength="6"
+                maxlength="20">
+            <p id="error"></p>
+            <button id="sub" type="submit" disabled>Войти в аккаунт</button>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('password').addEventListener('change', () => {
+            const getUser = async () => {
+                const res = await fetch('/getUser');
+                const userData = await res.json();
+
+                if (userData.password != document.getElementById('password').value) {
+                    document.getElementById('error').textContent = 'Вы не правильно ввели пароль!';
+                    document.getElementById('sub').disabled = true;
+                } else {
+                    document.getElementById('error').textContent = '';
+                    document.getElementById('sub').disabled = false;
+                }
+            }
+        });
+
+        document.getElementById('email').addEventListener('change', () => {
+            const getUser = async () => {
+                const res = await fetch('/getUser');
+                const userData = await res.json();
+
+                if (userData.email != document.getElementById('email').value) {
+                    document.getElementById('error').textContent = 'Пользователь с такой почтой не существует!';
+                    document.getElementById('sub').disabled = true;
+                } else {
+                    document.getElementById('error').textContent = '';
+                    document.getElementById('sub').disabled = false;
+                }
+            }
+
+            getUser();
+        })
+    </script>
+
+</body>
+
+</html>

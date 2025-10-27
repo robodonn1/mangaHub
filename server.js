@@ -279,6 +279,9 @@ app.get('/authorization', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'authorization.html'));
 })
 
+app.get('/profile', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'profile.html'))
+})
 
 //post запросы
 
@@ -307,7 +310,7 @@ app.post('/registration', async (req, res) => {
             statusId: user.statusId,
             chaptersReaded: user.chaptersReaded,
         };
-        
+
         res.redirect('/');
     } catch (e) {
         res.send(e);
@@ -339,6 +342,27 @@ app.post('/authorization', (req, res) => {
     }
 
     auth();
+})
+
+app.post('/saveProfile', async (res, res) => {
+    const { nickname, email, password } = req.body;
+
+    const oldUser = await getUser(email);
+
+    await oldUser.update({
+        nickname: nickname,
+        email: email,
+        password: password
+    });
+
+    req.session.user = {
+        ...req.session.user,
+        nickname: nickname,
+        email: email,
+        password: password
+    };
+
+    res.redirect('/profile')
 })
 
 app.post('/createBadge', async (req, res) => {
@@ -591,8 +615,22 @@ app.post('/giveTag', async (req, res) => {
 })
 
 //доп функции
-app.get('getUser', (req, res) => {
+app.get('/getUser', (req, res) => {
     res.json(getUser(req.body.email));
+})
+
+app.get('/sessionUser', async (req, res) => {
+    if (!req.session.user) return res.redirect('/authorization');
+
+    const userData = await Users.findByPk(req.session.user.id, {
+        include: [{
+            model: StatusTable,
+            as: 'status',
+            attributes: ['title'] 
+        }]
+    });
+
+    res.json({nickname: userData.nickname, email: userData.email, password: userData.password, level: userData.level, chaptersReaded: userData.chaptersReaded, status: userData.status.name});
 })
 
 async function getUser(email1) {

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Профиль</title>
+</head>
+<body>
+    
+    <h1>Страница профиля</h1>
+
+    <form action="/saveProfile" method="post">
+        <input type="text" name="nickname" id="nickname">
+        <p id="lvl"></p>
+        <p id="readedChapter"></p>
+        <p id="status"></p>
+        <input type="email" name="email" id="email">
+        <input type="password" name="password" id="password">
+
+        <button type="submit">Сохранить</button>
+    </form>
+
+    <script>
+        const setUser = async () => {
+            const res = await fetch('/sessionUser');
+            const userData = await res.json();
+
+            document.getElementById('nickname').value = userData.nickname;
+            document.getElementById('lvl').textContent  = userData.level;
+            document.getElementById('readedChapter').textContent = userData.chaptersReaded;
+            document.getElementById('status').textContent = userData.status;
+            document.getElementById('email').value = userData.email;
+            document.getElementById('password').value = userData.password;
+        }
+
+        setUser();
+    </script>
+</body>
+</html>

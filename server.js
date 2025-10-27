@@ -28,7 +28,7 @@ const connect = async () => {
 }
 
 //tables
-const StatusTable = sequelize.define(
+const Status = sequelize.define(
     'Status',
     {
         title: { type: DataTypes.STRING, allowNull: false },
@@ -40,7 +40,7 @@ const StatusTable = sequelize.define(
     },
 )
 
-const Badges = sequelize.define(
+const Badge = sequelize.define(
     'Badge',
     {
         title: { type: DataTypes.STRING, allowNull: false },
@@ -52,7 +52,7 @@ const Badges = sequelize.define(
     },
 )
 
-const BadgesToUsers = sequelize.define(
+const BadgeToUser = sequelize.define(
     'BadgeToUser',
     {
         userId: { type: DataTypes.INTEGER, allowNull: false },
@@ -60,7 +60,7 @@ const BadgesToUsers = sequelize.define(
     },
 )
 
-const MangaTags = sequelize.define(
+const MangaTag = sequelize.define(
     'MangaTag',
     {
         title: { type: DataTypes.STRING, allowNull: false },
@@ -69,7 +69,7 @@ const MangaTags = sequelize.define(
     }
 )
 
-const MangaTagsToMangas = sequelize.define(
+const MangaTagToManga = sequelize.define(
     "MangaTagToManga",
     {
         tagId: { type: DataTypes.INTEGER, allowNull: false },
@@ -77,7 +77,7 @@ const MangaTagsToMangas = sequelize.define(
     }
 )
 
-const Mangas = sequelize.define(
+const Manga = sequelize.define(
     'Manga',
     {
         title: { type: DataTypes.STRING, allowNull: false },
@@ -85,7 +85,7 @@ const Mangas = sequelize.define(
     }
 )
 
-const MangaChapters = sequelize.define(
+const MangaChapter = sequelize.define(
     'MangaChapter',
     {
         title: { type: DataTypes.STRING },
@@ -95,7 +95,7 @@ const MangaChapters = sequelize.define(
     }
 )
 
-const MangaChapterImages = sequelize.define(
+const MangaChapterImage = sequelize.define(
     'MangaChapterImage',
     {
         url: { type: DataTypes.STRING },
@@ -107,7 +107,7 @@ const MangaChapterImages = sequelize.define(
     },
 )
 
-const Users = sequelize.define(
+const User = sequelize.define(
     'User',
     {
         nickname: { type: DataTypes.STRING, allowNull: false },
@@ -120,86 +120,80 @@ const Users = sequelize.define(
 )
 
 const createSvyazi = async () => {
-    Users.hasMany(BadgesToUsers, {
+    User.hasMany(BadgeToUser, {
         foreignKey: 'userId',
         as: 'badge'
     })
-    Badges.hasMany(BadgesToUsers, {
+    Badge.hasMany(BadgeToUser, {
         foreignKey: 'badgeId',
         as: 'user'
     })
-    BadgesToUsers.belongsTo(Users, {
+    BadgeToUser.belongsTo(User, {
         foreignKey: 'userId',
         as: 'user'
     })
-    BadgesToUsers.belongsTo(Badges, {
+    BadgeToUser.belongsTo(Badge, {
         foreignKey: 'badgeId',
         as: 'badge'
     })
 
-    StatusTable.hasOne(Users, {
+    Status.hasOne(User, {
         foreignKey: 'statusId',
         as: 'user'
     })
-    Users.belongsTo(StatusTable, {
+    User.belongsTo(Status, {
         foreignKey: 'statusId',
         as: 'status'
     })
 
-    MangaTags.hasMany(MangaTagsToMangas, {
+    MangaTag.hasMany(MangaTagToManga, {
         foreignKey: 'tagId',
         as: 'manga'
     })
-    Mangas.hasMany(MangaTagsToMangas, {
+    Manga.hasMany(MangaTagToManga, {
         foreignKey: 'mangaId',
         as: 'tag'
     })
-    MangaTagsToMangas.belongsTo(MangaTags, {
+    MangaTagToManga.belongsTo(MangaTag, {
         foreignKey: 'tagId',
         as: 'tag'
     })
-    MangaTagsToMangas.belongsTo(Mangas, {
+    MangaTagToManga.belongsTo(Manga, {
         foreignKey: 'mangaId',
         as: 'manga'
     })
 
-    Mangas.hasMany(MangaChapters, {
+    Manga.hasMany(MangaChapter, {
         foreignKey: 'mangaId',
         as: 'chapter'
     })
-    MangaChapters.belongsTo(Mangas, {
+    MangaChapter.belongsTo(Manga, {
         foreignKey: 'mangaId',
         as: 'manga'
     })
 
-    MangaChapters.hasMany(MangaChapterImages, {
+    MangaChapter.hasMany(MangaChapterImage, {
         foreignKey: 'mangaChapterId',
         as: 'image'
     })
-    MangaChapterImages.belongsTo(MangaChapters, {
+    MangaChapterImage.belongsTo(MangaChapter, {
         foreignKey: 'mangaChapterId',
         as: 'chapter'
     })
 }
 
-const createSvyaz = async () => await createSvyazi();
-createSvyaz();
-
-const conn = async () => { await connect(); }
-conn();
-
 const createStatuses = async () => {
-    const reader = await StatusTable.create({
+    const reader = await Status.create({
         title: 'Читатель',
         name: 'reader',
         level: 0
     });
-    const publisher = await StatusTable.create({
+    const publisher = await Status.create({
         name: 'publisher',
         title: 'Издатель',
         level: 1
     });
-    const admin = await StatusTable.create({
+    const admin = await Status.create({
         title: 'Администратор',
         name: 'admin',
         level: 2
@@ -208,25 +202,24 @@ const createStatuses = async () => {
     await publisher.save();
     await admin.save();
 }
-createStatuses();
 
 const createBadges = async () => {
-    const welcomeBadge = await Badges.create({
+    const welcomeBadge = await Badge.create({
         title: 'Добро пожаловать на МангаХаб',
         name: 'welcome',
         type: 'default'
     })
-    const firstWeek = await Badges.create({
+    const firstWeek = await Badge.create({
         name: 'firstWeek',
         title: 'Неделя на сайте',
         type: 'default'
     })
-    const firstChapterBadge = await Badges.create({
+    const firstChapterBadge = await Badge.create({
         name: 'firstChapter',
         title: 'Первая глава',
         type: 'manga'
     })
-    const firstLevelBadge = await Badges.create({
+    const firstLevelBadge = await Badge.create({
         name: 'firstLvl',
         title: 'Первый уровень',
         type: 'lvl'
@@ -236,40 +229,39 @@ const createBadges = async () => {
     await firstChapterBadge.save();
     await firstLevelBadge.save();
 }
-createBadges();
 
 const createMangaTags = async () => {
-    const manga = await MangaTags.create({
+    const manga = await MangaTag.create({
         name: 'manga',
         title: 'Манга',
         type: 'type'
     })
-    const manhva = await MangaTags.create({
+    const manhva = await MangaTag.create({
         name: 'Manhva',
         title: 'Манхва',
         type: 'type'
     })
-    const militant = await MangaTags.create({
+    const militant = await MangaTag.create({
         name: 'militant',
         title: 'Боевик',
         type: 'genre'
     })
-    const drama = await MangaTags.create({
+    const drama = await MangaTag.create({
         name: 'drama',
         title: 'Драма',
         type: 'genre'
     })
-    const freezed = await MangaTags.create({
+    const freezed = await MangaTag.create({
         name: 'freezed',
         title: 'Заморожен',
         type: 'status'
     })
-    const continous = await MangaTags.create({
+    const continous = await MangaTag.create({
         name: 'continous',
         title: 'Продолжается',
         type: 'status'
     })
-    const completed = await MangaTags.create({
+    const completed = await MangaTag.create({
         name: 'completed',
         title: 'Завершен',
         type: 'status'
@@ -282,7 +274,21 @@ const createMangaTags = async () => {
     await continous.save();
     await completed.save();
 }
-createMangaTags();
+
+
+const startServer = async () => {
+    await connect();
+    await createSvyazi();
+    await createStatuses();
+    await createBadges();
+    await createMangaTags();
+
+    app.listen(PORT, () => {
+        console.log('http://localhost:3000')
+    })
+}
+
+startServer();
 
 //get запросы
 app.get('/', (req, res) => {
@@ -320,7 +326,7 @@ app.post('/registration', async (req, res) => {
     const { nickname, email, password } = req.body;
 
     try {
-        const user = await Users.findOne({
+        const user = await User.findOne({
             where: {
                 nickname: nickname
             }
@@ -374,7 +380,7 @@ app.post('/authorization', (req, res) => {
     auth();
 })
 
-app.post('/saveProfile', async (res, res) => {
+app.post('/saveProfile', async (req, res) => {
     const { nickname, email, password } = req.body;
 
     const oldUser = await getUser(email);
@@ -401,7 +407,7 @@ app.post('/createBadge', async (req, res) => {
     try {
         if (badgeType != 'lvl' && badgeType != 'manga' && badgeType != 'default') throw new Error('Такого типа беджа не существует');
 
-        const badge = await Badges.findOne({
+        const badge = await Badge.findOne({
             where: {
                 name: badgeName
             }
@@ -409,7 +415,7 @@ app.post('/createBadge', async (req, res) => {
 
         if (badge) throw new Error('Такой бедж уже существует');
 
-        const newBadge = await Badges.create({
+        const newBadge = await Badge.create({
             title: badgeTitle,
             name: badgeName,
             type: badgeType
@@ -427,7 +433,7 @@ app.post('/giveBadge', async (req, res) => {
     try {
         if (!userNickname && !badgeName) throw new Error('Нету пользователя или бейджа');
 
-        const user = await Users.findOne({
+        const user = await User.findOne({
             where: {
                 nickname: userNickname,
             }
@@ -435,7 +441,7 @@ app.post('/giveBadge', async (req, res) => {
 
         if (!user) throw new Error('Пользователя не существует!');
 
-        const badge = await Badges.findOne({
+        const badge = await Badge.findOne({
             where: {
                 name: badgeName,
             }
@@ -443,11 +449,11 @@ app.post('/giveBadge', async (req, res) => {
 
         if (!badge) throw new Error('Бейджа не существует!');
 
-        const BadgeToUser = await BadgesToUsers.create({
+        const newBadgeToUser = await BadgeToUser.create({
             userId: user.id,
             badgeId: badge.id,
         })
-        await BadgeToUser.save();
+        await newBadgeToUser.save();
 
         res.redirect('/');
     } catch (e) {
@@ -470,7 +476,7 @@ app.post('/createManga', async (req, res) => {
     try {
         if (!mangaName) throw new Error('Нету в query название манги!');
 
-        const manga = await Mangas.findOne({
+        const manga = await Manga.findOne({
             where: {
                 name: mangaName,
             }
@@ -478,7 +484,7 @@ app.post('/createManga', async (req, res) => {
 
         if (manga) throw new Error('Такая манга уже существует!');
 
-        const newManga = await Mangas.create({
+        const newManga = await Manga.create({
             name: mangaName,
             title: mangaTitle
         });
@@ -497,7 +503,7 @@ app.post('/createMangaChapter', async (req, res) => {
     const chapterTitle = req.body.chapterTitle;
 
     try {
-        const manga = await Mangas.findOne({
+        const manga = await Manga.findOne({
             where: {
                 name: mangaName,
             }
@@ -505,7 +511,7 @@ app.post('/createMangaChapter', async (req, res) => {
 
         if (!manga) throw new Error('Манга не существует!');
 
-        const chapter = await MangaChapters.findOne({
+        const chapter = await MangaChapter.findOne({
             where: {
                 name: chapterName
             }
@@ -513,7 +519,7 @@ app.post('/createMangaChapter', async (req, res) => {
 
         if (chapter) throw new Error('Такая глава уже существует!');
 
-        const lastChapter = await MangaChapters.findOne({
+        const lastChapter = await MangaChapter.findOne({
             attributes: [
                 [sequelize.fn('MAX', sequelize.col('number')), 'lastChapterNumber']
             ],
@@ -525,7 +531,7 @@ app.post('/createMangaChapter', async (req, res) => {
 
         const curNamber = (parseInt(lastChapter?.lastChapterNumber) || 0) + 1;
 
-        const newChapter = await MangaChapters.create({
+        const newChapter = await MangaChapter.create({
             name: chapterName,
             title: chapterTitle,
             mangaId: manga.id,
@@ -543,7 +549,7 @@ app.post('/createMangaChapterImage', async (req, res) => {
     const { imgUrl, mangaName, chapterNumber } = req.body;
 
     try {
-        const manga = await Mangas.findOne({
+        const manga = await Manga.findOne({
             where: {
                 name: mangaName,
             }
@@ -551,7 +557,7 @@ app.post('/createMangaChapterImage', async (req, res) => {
 
         if (!manga) throw new Error('Манга не существует!');
 
-        const curChapter = await MangaChapters.findOne({
+        const curChapter = await MangaChapter.findOne({
             where: {
                 mangaId: manga.id,
                 number: chapterNumber,
@@ -560,19 +566,19 @@ app.post('/createMangaChapterImage', async (req, res) => {
 
         if (!curChapter) throw new Error('Глава не существует!');
 
-        const lastImage = await MangaChapterImages.findOne({
+        const lastImage = await MangaChapterImage.findOne({
             attributes: [
                 [sequelize.fn('MAX', sequelize.col('number')), 'lastImageNumber']
             ],
             where: {
-                chapterId: curChapter.id
+                mangaChapterId: curChapter.id
             },
             raw: true
         });
 
         const curImgNumber = (parseInt(lastImage?.lastImageNumber) || 0) + 1;
 
-        const chapterImage = await MangaChapterImages.create({
+        const chapterImage = await MangaChapterImage.create({
             url: imgUrl,
             mangaChapterId: curChapter.id,
             number: curImgNumber,
@@ -591,7 +597,7 @@ app.post('/createMangaTag', async (req, res) => {
     try {
         if (tagType != 'type' && tagType != 'genre') throw new Error('Неправильно написан тег!');
 
-        const tag = await MangaTags.findOne({
+        const tag = await MangaTag.findOne({
             where: {
                 name: tagName
             }
@@ -599,7 +605,7 @@ app.post('/createMangaTag', async (req, res) => {
 
         if (tag) throw new Error('Такой тег существует!');
 
-        const newTag = await MangaTags.create({
+        const newTag = await MangaTag.create({
             title: tagTitle,
             name: tagName,
             type: tagType
@@ -617,7 +623,7 @@ app.post('/giveTag', async (req, res) => {
     const { tagName, mangaName } = req.body;
 
     try {
-        const manga = await Mangas.findOne({
+        const manga = await Manga.findOne({
             where: {
                 name: mangaName,
             }
@@ -625,15 +631,15 @@ app.post('/giveTag', async (req, res) => {
 
         if (!manga) throw new Error('Манга не существует!');
 
-        const tag = await MangaTags.findOne({
+        const tag = await MangaTag.findOne({
             where: {
                 name: tagName,
             }
         });
 
-        if (!tag) throw new Error('Манга не существует!');
+        if (!tag) throw new Error('Тег не существует!');
 
-        const tagToManga = MangaTagsToMangas.create({
+        const tagToManga = MangaTagToManga.create({
             tagId: tag.id,
             mangaId: manga.id
         })
@@ -652,9 +658,12 @@ app.get('/getUser', (req, res) => {
 app.get('/sessionUser', async (req, res) => {
     if (!req.session.user) return res.redirect('/authorization');
 
-    const userData = await Users.findByPk(req.session.user.id, {
+    const userData = await User.findOne({
+        where: {
+            email: req.session.user.email,
+        },  
         include: [{
-            model: StatusTable,
+            model: Status,
             as: 'status',
             attributes: ['title']
         }]
@@ -664,12 +673,12 @@ app.get('/sessionUser', async (req, res) => {
 })
 
 async function getUser(email1) {
-    return await Users.findOne({ where: { email: email1 } })
+    return await User.findOne({ where: { email: email1 } })
 }
 
 
 async function createUser(nick, email, password) {
-    const newUser = await Users.create({
+    const newUser = await User.create({
         nickname: nick,
         email: email,
         password: password,

@@ -88,7 +88,7 @@ const Mangas = sequelize.define(
 const MangaChapters = sequelize.define(
     'MangaChapter',
     {
-        title: { type: DataTypes.STRING, allowNull: false },
+        title: { type: DataTypes.STRING },
         name: { type: DataTypes.STRING, allowNull: false },
         number: { type: DataTypes.FLOAT, allowNull: false },
         mangaId: { type: DataTypes.INTEGER, allowNull: false },
@@ -259,10 +259,28 @@ const createMangaTags = async () => {
         title: 'Драма',
         type: 'genre'
     })
+    const freezed = await MangaTags.create({
+        name: 'freezed',
+        title: 'Заморожен',
+        type: 'status'
+    })
+    const continous = await MangaTags.create({
+        name: 'continous',
+        title: 'Продолжается',
+        type: 'status'
+    })
+    const completed = await MangaTags.create({
+        name: 'completed',
+        title: 'Завершен',
+        type: 'status'
+    })
     await manga.save();
     await manhva.save();
     await militant.save();
     await drama.save();
+    await freezed.save();
+    await continous.save();
+    await completed.save();
 }
 createMangaTags();
 
@@ -281,6 +299,18 @@ app.get('/authorization', (req, res) => {
 
 app.get('/profile', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'profile.html'))
+})
+
+app.get('/adminPanel', (req, res) => {
+    if (req.session.user.level != 2) res.redirect('/');
+
+    res.sendFile(path.join(__dirname, 'public', 'adminPanel.html'))
+})
+
+app.get('/publisherPanel', (req, res) => {
+    if (req.session.user.level < 1) res.redirect('/');
+
+    res.sendFile(path.join(__dirname, 'public', 'publisherPanel.html'))
 })
 
 //post запросы
@@ -509,7 +539,7 @@ app.post('/createMangaChapter', async (req, res) => {
     }
 })
 
-app.post('/createMangaChapterImages', async (req, res) => {
+app.post('/createMangaChapterImage', async (req, res) => {
     const { imgUrl, mangaName, chapterNumber } = req.body;
 
     try {
@@ -559,7 +589,7 @@ app.post('/createMangaTag', async (req, res) => {
     const { tagName, tagTitle, tagType } = req.body;
 
     try {
-        if (tagType != 'type' && tagType != 'genre' && tagType != 'status') throw new Error('Неправильно написан тег!');
+        if (tagType != 'type' && tagType != 'genre') throw new Error('Неправильно написан тег!');
 
         const tag = await MangaTags.findOne({
             where: {
@@ -626,11 +656,11 @@ app.get('/sessionUser', async (req, res) => {
         include: [{
             model: StatusTable,
             as: 'status',
-            attributes: ['title'] 
+            attributes: ['title']
         }]
     });
 
-    res.json({nickname: userData.nickname, email: userData.email, password: userData.password, level: userData.level, chaptersReaded: userData.chaptersReaded, status: userData.status.name});
+    res.json({ nickname: userData.nickname, email: userData.email, password: userData.password, level: userData.level, chaptersReaded: userData.chaptersReaded, status: userData.status.name });
 })
 
 async function getUser(email1) {

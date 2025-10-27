@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Панель для админов</title>
+</head>
+
+<body>
+
+    <div>
+        <h1>Страница для создания всяких штук</h1>
+
+        <form action="/createBadge" method="post">
+            <select name="badgeType" id="" title="Тип получения бейджа" required>
+                <option value="lvl">За уровень</option>
+                <option value="manga">За мангу</option>
+                <option value="default">Системный</option>
+            </select>
+            <input type="text" name="badgeName" id="" placeholder="Название переменной для бейджа" required>
+            <input type="text" name="badgeTitle" id="" placeholder="Имя бейджа, которое будет высвечивается" required>
+            <button type="submit">Создать</button>
+        </form>
+
+        <form action="/giveBadge" method="post">
+            <input type="text" name="userNickname" id="" required placeholder="Никнейм пользователя">
+            <input type="text" name="badgeName" required placeholder="Название переменной для бейджа">
+            <button type="submit">Дать бейдж</button>
+        </form>
+
+        <form action="/createMangaTag" method="post">
+            <select name="tagType" id="" title="Тип для тега" required>
+                <option value="type">Тип(манга, манхва, манхуа)</option>
+                <option value="genre">Жанр(боевик, драма, комедия и тд)</option>
+            </select>
+            <input type="text" name="tagName" id="" required placeholder="Название переменной для манги">
+            <input type="text" name="tagTitle" id="" required placeholder="Название манги, которое будет высвечиваться">
+        </form>
+        
+    </div>
+
+</body>
+
+</html>

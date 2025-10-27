@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Панель для редакторов</title>
+</head>
+<body>
+    
+    <div>
+        <h1>Панель для редактора и админов</h1>
+
+        <form action="/createManga" method="post">
+            <input type="text" name="mangaName" id="" placeholder="Название манги для переменной" required>
+            <input type="text" name="mangaTitle" id="" placeholder="Название манги, которое будет высвечиваться" required>
+            <button type="submit">Создать мангу</button>
+        </form>
+
+        <form action="/createMangaChapter" method="post">
+            <input type="text" name="mangaName" id="" placeholder="Название манги в переменной" required>
+            <input type="text" name="chapterName" id="" placeholder="Название главы для переменной" required>
+            <input type="text" name="chapterTitle" id="" placeholder="Название главы, которое высвечивается(можно оставить пустым)">
+            <button type="submit">Создать главу</button>
+        </form>
+
+        <form action="/createMangaChapterImage" method="post">
+            <input type="url" name="imgUrl" id="" placeholder="Ссылка на картинку" required>
+            <input type="text" name="mangaName" id="" placeholder="Название манги в переменной" required>
+            <input type="number" name="chapterNumber" id="" placeholder="Номер главы манги" required>
+            <button type="submit">Добавить картинку к манге</button>
+        </form>
+
+        <form action="/giveTag" method="post">
+            <input type="text" name="mangaName" id="" placeholder="Название манги в переменной" required>
+            <input type="text" name="badgeName" id="" placeholder="Название бейджа в переменной" required>
+            <button type="submit">Дать тег манге</button>
+        </form>
+    </div>
+
+</body>
+</html>

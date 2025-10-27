@@ -20,6 +20,10 @@
         <button type="submit">Сохранить</button>
     </form>
 
+    <form action="/logout" method="post">
+        <button type="submit">Выйти из аккаунта</button>
+    </form>
+
     <script>
         const setUser = async () => {
             const res = await fetch('/sessionUser');

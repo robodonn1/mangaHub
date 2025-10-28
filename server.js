@@ -400,7 +400,7 @@ app.post('/authorization', (req, res) => {
 app.post('/saveProfile', async (req, res) => {
     const { nickname, email, password } = req.body;
 
-    const oldUser = await getUser(email);
+    const oldUser = await getUser(req.session.user.email);
 
     await oldUser.update({
         nickname: nickname,

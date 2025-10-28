@@ -137,7 +137,7 @@ const createSvyazi = async () => {
         as: 'badge'
     })
 
-    Status.hasOne(User, {
+    Status.hasMany(User, {
         foreignKey: 'statusId',
         as: 'user'
     })
@@ -275,6 +275,17 @@ const createMangaTags = async () => {
     await completed.save();
 }
 
+const createAdimAccaount = async () => {
+    const admin = await User.create({
+        nickname: 'Крутой админ',
+        statusId: 3,
+        level: 100,
+        chaptersReaded: 0,
+        email: 'adminAcc@gmail.com',
+        password: 'passwordQ!1'
+    })
+    await admin.save();
+}
 
 const startServer = async () => {
     await connect();
@@ -282,6 +293,7 @@ const startServer = async () => {
     await createStatuses();
     await createBadges();
     await createMangaTags();
+    await createAdimAccaount();
 
     app.listen(PORT, () => {
         console.log('http://localhost:3000')
@@ -304,16 +316,20 @@ app.get('/authorization', (req, res) => {
 })
 
 app.get('/profile', (req, res) => {
+    if (!req.session.user) return res.redirect('/authorization');
+
     res.sendFile(path.join(__dirname, 'public', 'profile.html'))
 })
 
 app.get('/adminPanel', (req, res) => {
-    if (req.session.user.level != 2) res.redirect('/');
+    if (!req.session.user) res.redirect('/');
+    if (req.session.user.statusId != 3) res.redirect('/');
 
     res.sendFile(path.join(__dirname, 'public', 'adminPanel.html'))
 })
 
 app.get('/publisherPanel', (req, res) => {
+    if (!req.session.user) res.redirect('/');
     if (req.session.user.level < 1) res.redirect('/');
 
     res.sendFile(path.join(__dirname, 'public', 'publisherPanel.html'))
@@ -335,16 +351,17 @@ app.post('/registration', async (req, res) => {
         if (user) throw new Error('Такой пользователь уже существует! <button onclick="window.location.href=`/registration`">Вернутся</button>');
 
         await createUser(nickname, email, password);
+
         const newUser = await getUser(email);
-        if (newUser) throw new Error('Пользователя не существует <button onclick="window.location.href=`/registration`">Вернутся</button>');
+        if (!newUser) throw new Error('Пользователя не существует <button onclick="window.location.href=`/registration`">Вернутся</button>');
 
         req.session.user = {
-            nickname: user.nickname,
-            email: user.email,
-            password: user.password,
-            level: user.level,
-            statusId: user.statusId,
-            chaptersReaded: user.chaptersReaded,
+            nickname: newUser.nickname,
+            email: newUser.email,
+            password: newUser.password,
+            level: newUser.level,
+            statusId: newUser.statusId,
+            chaptersReaded: newUser.chaptersReaded,
         };
 
         res.redirect('/');
@@ -651,17 +668,12 @@ app.post('/giveTag', async (req, res) => {
 })
 
 //доп функции
-app.get('/getUser', (req, res) => {
-    res.json(getUser(req.body.email));
-})
 
 app.get('/sessionUser', async (req, res) => {
-    if (!req.session.user) return res.redirect('/authorization');
-
     const userData = await User.findOne({
         where: {
             email: req.session.user.email,
-        },  
+        },
         include: [{
             model: Status,
             as: 'status',
@@ -669,7 +681,9 @@ app.get('/sessionUser', async (req, res) => {
         }]
     });
 
-    res.json({ nickname: userData.nickname, email: userData.email, password: userData.password, level: userData.level, chaptersReaded: userData.chaptersReaded, status: userData.status.name });
+    console.log({ nickname: userData.nickname, email: userData.email, password: userData.password, level: userData.level, chaptersReaded: userData.chaptersReaded, status: userData.status.title });
+
+    res.json({ nickname: userData.nickname, email: userData.email, password: userData.password, level: userData.level, chaptersReaded: userData.chaptersReaded, status: userData.status.title });
 })
 
 async function getUser(email1) {
@@ -683,7 +697,7 @@ async function createUser(nick, email, password) {
         email: email,
         password: password,
         level: 0,
-        statusId: 0,
+        statusId: 1,
         chaptersReaded: 0,
     });
     await newUser.save();

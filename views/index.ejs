@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Главная страница</title>
+</head>
+
+<body>
+
+    <header>
+        <nav class="headLeft">
+            <a href="/">
+                <img src="" alt="">
+            </a>
+            <a href="/">Главная</a>
+            <a href="/catalog">Каталог</a>
+        </nav>
+        <nav class="headRight">
+            <form action="/search" method="get">
+                <input type="text" name="search" id="" placeholder="Что-то ищете?">
+            </form>
+            <button id="changeTheme">
+                <img src="" alt="">
+            </button>
+            <a href="/favorite">
+                <img src="" alt="">
+            </a>
+            <a href="/notification">
+                <img src="" alt="">
+            </a>
+            <% if(curUser){ %>
+                <a href="/profile">
+                    <img id="ava" src="" alt="">
+                </a>
+                <% } else { %>
+                    <a href="/autherization">
+                        <img src="" alt="">
+                    </a>
+                    <% } %>
+        </nav>
+    </header>
+
+    <main>
+        <div class="welcome">
+            <h1>Добро пожаловать</h1>
+            <hr>
+        </div>
+
+        <div class="links">
+            <a href="#readManga">Читать мангу</a>
+            <a href="#bestManga">Новинки</a>
+            <a href="#topUsers">Лучшее</a>
+            <a href="#recomendedManga">Рекомендовано</a>
+        </div>
+
+        <div class="readManga" id="readManga">
+            <div class="zagolovok">
+                <h1>Читать мангу</h1>
+            </div>
+            <div class="mangasRead">
+                <% mangasRead.forEach(manga=> { %>
+                    <div class="manga">
+                        <img src="<%= manga.imgUrl %>" alt="">
+                        <div class="text">
+                            <h2>
+                                <%= manga.title %>
+                            </h2>
+                            <p>
+                                <%= manga.tag.tag %>
+                            </p>
+                        </div>
+                    </div>
+                <% }); %>
+            </div>
+        </div>
+
+        <div class="bestManga" id="bestManga">
+            <div class="zagolovok">
+                <h1>Новинки</h1>
+            </div>
+
+            <div class="mangasBest">
+                <% mangasBest.forEach(manga=> { %>
+                <div class="manga">
+                    <img src="<%= manga.imgUrl %>" alt="">
+                    <div class="text">
+                        <h2><%= manga.title %></h2>
+                        <p><%= manga.tag.title %></p>
+                    </div>
+                </div>
+                <% }); %>
+            </div>
+        </div>
+
+        <div class="topUsers" id="topUsers">
+            <div class="zagolovok">
+                <h1>Топ пользователей</h1>
+            </div>
+            <div class="usersTop">
+                <% usersTop.forEach(user => { %>
+                <div class="user">
+                    <img src="<%= user.avatar %>" alt="">
+                    <div class="userLeft">
+                        <h3><%= user.nickname %></h3>
+                        <div class="level">
+                            <hr id="lvlLine">
+                            <hr id="back">
+                        </div>
+                        <p>Уровень пользователя:<%= user.level %></p>
+                    </div>
+                </div>
+                <% }); %>
+            </div>
+        </div>
+
+        <div class="recomendedManga" id="recomendedManga">
+            <div class="zagolovok">
+                <h1>Рекомендовано</h1>
+            </div>
+
+            <div class="mangasRecomended">
+                <% mangasRecomended.forEach(manga=> { %>
+                <div class="manga">
+                    <img src="<%= manga.imgUrl %>" alt="">
+                    <div class="text">
+                        <h2><%= manga.title %></h2>
+                        <p><%= manga.tag.title %></p>
+                    </div>
+                </div>
+                <% }); %>
+            </div>
+        </div>
+    </main>
+
+</body>
+
+</html>

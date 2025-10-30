@@ -3,10 +3,16 @@ const path = require('path');
 const session = require('express-session');
 const { Sequelize, DataTypes, Op, where } = require('sequelize');
 const { create } = require('domain');
+const { getRandomValues } = require('crypto');
 const app = express();
 const PORT = 3000;
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static('public'));
+app.use(express.static('views'));
+
+app.set('view engine', 'ejs');
+
+app.set('views', path.join(__dirname, 'views'));
+
 app.use(session({
     secret: 'secret-key',
     resave: false,
@@ -82,6 +88,9 @@ const Manga = sequelize.define(
     {
         title: { type: DataTypes.STRING, allowNull: false },
         name: { type: DataTypes.STRING, allowNull: false },
+        description: { type: DataTypes.STRING },
+        imgUrl: { type: DataTypes.STRING },
+        rate: { type: DataTypes.FLOAT, allowNull: false, defaultValue: 0 }
     }
 )
 
@@ -107,6 +116,14 @@ const MangaChapterImage = sequelize.define(
     },
 )
 
+const FavoriteUserManga = sequelize.define(
+    'FavoriteUserManga',
+    {
+        mangaId: { type: DataTypes.INTEGER, allowNull: false },
+        userId: { type: DataTypes.INTEGER, allowNull: false }
+    }
+)
+
 const User = sequelize.define(
     'User',
     {
@@ -114,6 +131,7 @@ const User = sequelize.define(
         statusId: { type: DataTypes.INTEGER, allowNull: false, defaultValue: 0 },
         level: { type: DataTypes.INTEGER, allowNull: false, defaultValue: 0 },
         chaptersReaded: { type: DataTypes.INTEGER, allowNull: false, defaultValue: 0 },
+        avatar: { type: DataTypes.STRING, allowNull: false, defaultValue: 'https://i.pinimg.com/originals/14/9e/19/149e19f87afe0925d7b84ed81f2db766.jpg' },
         email: { type: DataTypes.STRING, allowNull: false },
         password: { type: DataTypes.STRING, allowNull: false },
     }
@@ -179,6 +197,24 @@ const createSvyazi = async () => {
     MangaChapterImage.belongsTo(MangaChapter, {
         foreignKey: 'mangaChapterId',
         as: 'chapter'
+    })
+
+    FavoriteUserManga.belongsTo(Manga, {
+        foreignKey: 'mangaId',
+        as: 'manga'
+    })
+    FavoriteUserManga.belongsTo(User, {
+        foreignKey: 'userId',
+        as: 'user'
+    })
+
+    Manga.hasMany(FavoriteUserManga, {
+        foreignKey: 'mangaId',
+        as: 'user'
+    })
+    User.hasMany(FavoriteUserManga, {
+        foreignKey: 'userId',
+        as: 'favoriteManga'
     })
 }
 
@@ -276,15 +312,33 @@ const createMangaTags = async () => {
 }
 
 const createAdimAccaount = async () => {
-    const admin = await User.create({
-        nickname: 'Крутой админ',
-        statusId: 3,
-        level: 100,
-        chaptersReaded: 0,
-        email: 'adminAcc@gmail.com',
-        password: 'passwordQ!1'
-    })
-    await admin.save();
+    for (let i = 0; i < 4; i++) {
+        const admin = await User.create({
+            nickname: 'Крутой админ',
+            statusId: 3,
+            level: Math.floor(Math.random() * 100),
+            email: 'adminAcc@gmail.com',
+            password: 'passwordQ!1'
+        })
+        await admin.save();
+    }
+}
+
+const createSomeManga = async () => {
+    for (let i = 0; i < 40; i++) {
+        const newManga = await Manga.create({
+            title: 'Манга' + i,
+            name: 'manga' + i,
+            description: 'Крутая манга ляляля я семен лобавнов у меня бошка из картошки',
+            imgUrl: 'https://avatars.mds.yandex.net/i?id=f0a73a879769a029e68e88f3350e2802_l-11543356-images-thumbs&n=13'
+        })
+        await newManga.save();
+        const addTag = await MangaTagToManga.create({
+            mangaId: i + 1,
+            tagId: Math.floor(Math.random() * 7)
+        });
+        await addTag.save();
+    }
 }
 
 const startServer = async () => {
@@ -294,46 +348,75 @@ const startServer = async () => {
     await createBadges();
     await createMangaTags();
     await createAdimAccaount();
+    await createSomeManga();
 
     app.listen(PORT, () => {
-        console.log('http://localhost:3000')
-    })
+        console.log('http://localhost:3000');
+    });
 }
 
 startServer();
 
 //get запросы
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
-})
+app.get('/', async (req, res) => {
+    // res.sendFile(path.join(__dirname, 'public', 'index.html'));
+
+    const curUser = req.session.user;
+    const mangasRead = await Manga.findAll({ order: sequelize.random(), limit: 15, include: { model: MangaTagToManga, as: 'tag', include: { model: MangaTag, as: 'tag', attributes: ['title'] } } })
+    const mangasBest = await Manga.findAll({ order: [['rate', 'DESC']], limit: 15, include: { model: MangaTagToManga, as: 'tag', include: { model: MangaTag, as: 'tag', attributes: ['title'] } } })
+    const usersTop = await User.findAll({ order: [['level', 'DESC']], limit: 12 })
+    // const mangasRecomended = []
+    // const favoriteUserTags = await FavoriteUserManga.findAll({where: { userId: req.session.user ?? 0}, limit: 3, attributes: ''})
+    // for (let i = 0; i < 15; i++) {
+    //     const bemanga = await Manga.findOne({ where: { id: [Op.in] } })
+    // }
+
+    const mangasRecomended = mangasBest;
+
+    res.render('index', { curUser, mangasRead, mangasBest, usersTop, mangasRecomended });
+});
 
 app.get('/registration', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'registration.html'));
-})
+});
 
 app.get('/authorization', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'authorization.html'));
-})
+});
 
 app.get('/profile', (req, res) => {
     if (!req.session.user) return res.redirect('/authorization');
 
     res.sendFile(path.join(__dirname, 'public', 'profile.html'))
-})
+});
 
-app.get('/adminPanel', (req, res) => {
+app.get('/adminPanel/:id/:what', async (req, res) => {
     if (!req.session.user) res.redirect('/');
     if (req.session.user.statusId != 3) res.redirect('/');
 
-    res.sendFile(path.join(__dirname, 'public', 'adminPanel.html'))
-})
+    const thingToChangeString = req.params.what;
+    const thingId = req.params.id;
+    let thingToChange;
+
+    if (thingToChangeString == 'badge') {
+        thingToChange = await Badge.findOne({
+            where: {
+                id: thingId,
+            }
+        })
+    }
+
+    const badges = await Badge.findAll();
+
+    res.render('adminPanel', { badges, thingToChange });
+});
 
 app.get('/publisherPanel', (req, res) => {
     if (!req.session.user) res.redirect('/');
     if (req.session.user.level < 1) res.redirect('/');
 
     res.sendFile(path.join(__dirname, 'public', 'publisherPanel.html'))
-})
+});
 
 //post запросы
 
@@ -482,8 +565,38 @@ app.post('/logout', (req, res) => {
     req.session.destroy(() => {
         res.redirect('/');
     });
-})
+});
 
+app.post('/deleteBadge/:id', async (req, res) => {
+    try {
+        const badgeId = req.params.id;
+
+        await Badge.destroy({
+            where: {
+                id: badgeId,
+            }
+        })
+        res.redirect('/adminPanel/0/0');
+    } catch (e) {
+        res.send(e);
+    }
+});
+
+app.post('/changeBadge', async (req, res) => {
+    const { badgeId, badgeName, badgeTitle, badgeType } = req.body;
+
+    await Badge.update({
+        name: badgeName,
+        title: badgeTitle,
+        type: badgeType,
+    }, {
+        where: {
+            id: badgeId,
+        }
+    })
+
+    res.redirect('/adminPanel/0/0')
+})
 
 //manga
 app.post('/createManga', async (req, res) => {

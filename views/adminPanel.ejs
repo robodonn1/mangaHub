@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Админ панель</title>
+</head>
+
+<body>
+
+    <table class="badges">
+        <h1>Таблица бейджиков</h1>
+        <thead>
+            <tr>
+                <th>Айди</th>
+                <th>Название</th>
+                <th>Переменная</th>
+                <th>Тип</th>
+                <th>Действия</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% badges.forEach(badge=> { %>
+                <tr>
+                    <td>
+                        <%= badge.id%>
+                    </td>
+                    <td>
+                        <%= badge.title%>
+                    </td>
+                    <td>
+                        <%= badge.name %>
+                    </td>
+                    <td>
+                        <%= badge.type %>
+                    </td>
+                    <td>
+                        <form action="/deleteBadge/<%=badge.id%>" method="post">
+                            <button type="submit">Удалить</button>
+                        </form>
+                        <button id="change"
+                            onclick="window.location.href=`/adminPanel/<%=badge.id%>/badge`">Изменить</button>
+                    </td>
+                </tr>
+                <% }) %>
+        </tbody>
+    </table>
+
+    <h1>Изменение бейджа</h1>
+    <% if(thingToChange){ %>
+        <form action="/changeBadge" method="post" style="display: flex; flex-direction: column; gap: 10px;">
+            <input type="number" name="badgeId" id="" value="<%= thingToChange.id %>">
+            <input type="text" name="badgeName" id="" value="<%=thingToChange.name%>">
+            <input type="text" name="badgeTitle" id="" value="<%=thingToChange.title%>">
+            <input type="text" name="badgeType" id="" value="<%=  thingToChange.type %>">
+            <button type="submit">Изменить</button>
+        </form>
+        <% } %>
+</body>
+
+</html>

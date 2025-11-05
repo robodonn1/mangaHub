@@ -5,6 +5,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Главная страница</title>
+    <link rel="stylesheet" type="text/css" href="/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,200..1000;1,200..1000&display=swap"
+        rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,200..1000;1,200..1000&family=Stick&display=swap"
+        rel="stylesheet">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Marcellus&family=Play:wght@400;700&display=swap" rel="stylesheet">
 </head>
 
 <body>
@@ -12,23 +25,23 @@
     <header>
         <nav class="headLeft">
             <a href="/">
-                <img src="" alt="">
+                <img src="img/logo.png" alt="">
             </a>
             <a href="/">Главная</a>
             <a href="/catalog">Каталог</a>
         </nav>
         <nav class="headRight">
             <form action="/search" method="get">
-                <input type="text" name="search" id="" placeholder="Что-то ищете?">
+                <input type="text" name="search" id="searsh" placeholder="      🔍︎ Что-то ищете?">
             </form>
             <button id="changeTheme">
-                <img src="" alt="">
+                <img src="img/themeIco.png" alt="">
             </button>
             <a href="/favorite">
-                <img src="" alt="">
+                <img src="img/favIco.png" alt="">
             </a>
             <a href="/notification">
-                <img src="" alt="">
+                <img src="img/ballIco.png" alt="">
             </a>
             <% if(curUser){ %>
                 <a href="/profile">
@@ -36,13 +49,15 @@
                 </a>
                 <% } else { %>
                     <a href="/autherization">
-                        <img src="" alt="">
+                        <img src="img/exitIco.png" alt="">
                     </a>
                     <% } %>
         </nav>
     </header>
 
     <main>
+        <div class="left-wall"></div>
+        <div class="right-wall"></div>
         <div class="welcome">
             <h1>Добро пожаловать</h1>
             <hr>
@@ -69,10 +84,37 @@
                             </h2>
                             <p>
                                 <%= manga.tag.tag %>
+
                             </p>
                         </div>
                     </div>
-                <% }); %>
+                    <% }); %>
+                        <% mangasRead.forEach(manga=> { %>
+                            <div class="manga">
+                                <img src="<%= manga.imgUrl %>" alt="">
+                                <div class="text">
+                                    <h2>
+                                        <%= manga.title %>
+                                    </h2>
+                                    <p>
+                                        <%= manga.tag.tag %>
+                                    </p>
+                                </div>
+                            </div>
+                            <% }); %>
+                                <% mangasRead.forEach(manga=> { %>
+                                    <div class="manga">
+                                        <img src="<%= manga.imgUrl %>" alt="">
+                                        <div class="text">
+                                            <h2>
+                                                <%= manga.title %>
+                                            </h2>
+                                            <p>
+                                                <%= manga.tag.tag %>
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <% }); %>
             </div>
         </div>
 
@@ -83,35 +125,68 @@
 
             <div class="mangasBest">
                 <% mangasBest.forEach(manga=> { %>
-                <div class="manga">
-                    <img src="<%= manga.imgUrl %>" alt="">
-                    <div class="text">
-                        <h2><%= manga.title %></h2>
-                        <p><%= manga.tag.title %></p>
+                    <div class="manga">
+                        <img src="<%= manga.imgUrl %>" alt="">
+                        <div class="text">
+                            <h2>
+                                <%= manga.title %>
+                            </h2>
+                            <p>
+                                <%= manga.tag.title %>
+                            </p>
+                        </div>
                     </div>
-                </div>
-                <% }); %>
+                    <% }); %>
+                <% mangasBest.forEach(manga=> { %>
+                    <div class="manga">
+                        <img src="<%= manga.imgUrl %>" alt="">
+                        <div class="text">
+                            <h2>
+                                <%= manga.title %>
+                            </h2>
+                            <p>
+                                <%= manga.tag.title %>
+                            </p>
+                        </div>
+                    </div>
+                    <% }); %>
+                <% mangasBest.forEach(manga=> { %>
+                    <div class="manga">
+                        <img src="<%= manga.imgUrl %>" alt="">
+                        <div class="text">
+                            <h2>
+                                <%= manga.title %>
+                            </h2>
+                            <p>
+                                <%= manga.tag.title %>
+                            </p>
+                        </div>
+                    </div>
+                    <% }); %>
             </div>
         </div>
 
-        <div class="topUsers" id="topUsers">
+        <div class="topUsers " id="topUsers">
             <div class="zagolovok">
                 <h1>Топ пользователей</h1>
             </div>
             <div class="usersTop">
-                <% usersTop.forEach(user => { %>
-                <div class="user">
-                    <img src="<%= user.avatar %>" alt="">
-                    <div class="userLeft">
-                        <h3><%= user.nickname %></h3>
-                        <div class="level">
-                            <hr id="lvlLine">
-                            <hr id="back">
+                <% usersTop.forEach(user=> { %>
+                    <div class="user">
+                        <img src="<%= user.avatar %>" alt="">
+                        <div class="userLeft">
+                            <h3>
+                                <%= user.nickname %>
+                            </h3>
+                            <div class="level">
+                                <hr id="lvlLine">
+                                <hr id="back">
+                            </div>
+                            <p>Уровень пользователя:<%= user.level %>
+                            </p>
                         </div>
-                        <p>Уровень пользователя:<%= user.level %></p>
                     </div>
-                </div>
-                <% }); %>
+                    <% }); %>
             </div>
         </div>
 
@@ -122,17 +197,242 @@
 
             <div class="mangasRecomended">
                 <% mangasRecomended.forEach(manga=> { %>
-                <div class="manga">
-                    <img src="<%= manga.imgUrl %>" alt="">
-                    <div class="text">
-                        <h2><%= manga.title %></h2>
-                        <p><%= manga.tag.title %></p>
+                    <div class="manga">
+                        <img src="<%= manga.imgUrl %>" alt="">
+                        <div class="text">
+                            <h2>
+                                <%= manga.title %>
+                            </h2>
+                            <p>
+                                <%= manga.tag.title %>
+                            </p>
+                        </div>
                     </div>
-                </div>
-                <% }); %>
+                    <% }); %>
+                <% mangasRecomended.forEach(manga=> { %>
+                    <div class="manga">
+                        <img src="<%= manga.imgUrl %>" alt="">
+                        <div class="text">
+                            <h2>
+                                <%= manga.title %>
+                            </h2>
+                            <p>
+                                <%= manga.tag.title %>
+                            </p>
+                        </div>
+                    </div>
+                    <% }); %>
+                <% mangasRecomended.forEach(manga=> { %>
+                    <div class="manga">
+                        <img src="<%= manga.imgUrl %>" alt="">
+                        <div class="text">
+                            <h2>
+                                <%= manga.title %>
+                            </h2>
+                            <p>
+                                <%= manga.tag.title %>
+                            </p>
+                        </div>
+                    </div>
+                    <% }); %>
             </div>
         </div>
+
     </main>
+
+    <footer>
+        <div class="fotCont">
+            <div class="upFo">
+                <img src="img/logo.png" alt="">
+                <p>MangaHub</p>
+            </div>
+            <p> MangaHub © Все права защищены</p>
+        </div>
+    </footer>
+
+    <button id="scrollToTop" style="display: none;">↑</button>
+
+    <div id="scroll-overlay"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Apply wheel scrolling to all manga containers
+            const containers = document.querySelectorAll('.mangasRead, .mangasBest, .mangasRecomended');
+
+            containers.forEach(container => {
+                // Wheel support
+                container.addEventListener('wheel', (e) => {
+                    e.preventDefault();
+                    container.scrollLeft += e.deltaY * 3; // adjust speed
+                });
+            });
+
+            // Infinite loop for all containers that have duplicated content
+            containers.forEach(container => {
+                container.addEventListener('scroll', () => {
+                    const thirdWidth = container.scrollWidth / 3;
+                    if (container.scrollLeft >= thirdWidth * 2) {
+                        container.scrollLeft = thirdWidth;
+                    } else if (container.scrollLeft <= 0) {
+                        container.scrollLeft = thirdWidth;
+                    }
+                });
+            });
+
+            // Snap to center functionality for all manga containers
+            containers.forEach(container => {
+                let scrollTimeout;
+
+                container.addEventListener('scroll', () => {
+                    clearTimeout(scrollTimeout);
+                    scrollTimeout = setTimeout(() => {
+                        snapToCenter(container);
+                    }, 40); // Wait 40ms after scroll stops
+                });
+            });
+
+            function snapToCenter(container) {
+                const containerRect = container.getBoundingClientRect();
+                const containerCenter = containerRect.left + containerRect.width / 2;
+                const mangaItems = container.querySelectorAll('.manga');
+
+                let closestItem = null;
+                let minDistance = Infinity;
+
+                mangaItems.forEach(item => {
+                    const itemRect = item.getBoundingClientRect();
+                    const itemCenter = itemRect.left + itemRect.width / 2;
+                    const distance = Math.abs(containerCenter - itemCenter);
+
+                    if (distance < minDistance) {
+                        minDistance = distance;
+                        closestItem = item;
+                    }
+                });
+
+                if (closestItem) {
+                    const itemRect = closestItem.getBoundingClientRect();
+                    const itemCenter = itemRect.left + itemRect.width / 2;
+                    const scrollLeft = container.scrollLeft + (itemCenter - containerCenter);
+
+                    container.scrollTo({
+                        left: scrollLeft,
+                        behavior: 'smooth'
+                    });
+                }
+            }
+
+            // Smooth scrolling with blur effect for links
+            function smoothScrollTo(element, duration = 1700, callback) {
+                const targetPosition = element.getBoundingClientRect().top + window.pageYOffset;
+                const startPosition = window.pageYOffset;
+                const distance = targetPosition - startPosition;
+                let startTime = null;
+
+                function animation(currentTime) {
+                    if (startTime === null) startTime = currentTime;
+                    const timeElapsed = currentTime - startTime;
+                    const run = ease(timeElapsed, startPosition, distance, duration);
+                    window.scrollTo(0, run);
+                    if (timeElapsed < duration) {
+                        requestAnimationFrame(animation);
+                    } else {
+                        if (callback) callback();
+                    }
+                }
+
+                function ease(t, b, c, d) {
+                    t /= d / 2;
+                    if (t < 1) return c / 2 * t * t * t + b;
+                    t -= 2;
+                    return c / 2 * (t * t * t + 2) + b;
+                }
+
+                requestAnimationFrame(animation);
+            }
+
+            const links = document.querySelectorAll('.links a');
+            links.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetId = link.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        document.documentElement.classList.add('scrolling');
+                        smoothScrollTo(targetElement, 1600, () => {
+                            setTimeout(() => {
+                                document.documentElement.classList.remove('scrolling');
+                            }, 90);
+                        });
+                    }
+                });
+            });
+
+            // Auto-scroll functionality for sliders
+            const mangasRead = document.querySelector('.mangasRead');
+            const mangasBest = document.querySelector('.mangasBest');
+            const mangasRecomended = document.querySelector('.mangasRecomended');
+
+            // Store intervals for each container
+            const intervals = [null, null, null];
+            const intervalsData = [
+                { container: mangasRead, time: 5000 },
+                { container: mangasBest, time: 6000 },
+                { container: mangasRecomended, time: 7000 }
+            ];
+
+            // Function to auto-scroll a container
+            function autoScroll(container, interval, index) {
+                return setInterval(() => {
+                    const scrollAmount = 244; // 220px (manga width) + 24px (gap)
+                    container.scrollLeft += scrollAmount;
+
+                    // Reset to middle section when reaching the end for infinite effect
+                    const thirdWidth = container.scrollWidth / 3;
+                    if (container.scrollLeft >= thirdWidth * 2) {
+                        container.scrollLeft = thirdWidth;
+                    }
+                }, interval);
+            }
+
+            // Start auto-scrolling for all containers
+            intervalsData.forEach((data, index) => {
+                intervals[index] = autoScroll(data.container, data.time, index);
+            });
+
+            // Pause auto-scroll on hover and resume on mouse leave
+            containers.forEach((container, index) => {
+                container.addEventListener('mouseenter', () => {
+                    clearInterval(intervals[index]);
+                    intervals[index] = null;
+                });
+
+                container.addEventListener('mouseleave', () => {
+                    if (!intervals[index]) {
+                        intervals[index] = autoScroll(container, intervalsData[index].time, index);
+                    }
+                });
+            });
+
+            // Scroll to top button functionality
+            const scrollToTopBtn = document.getElementById('scrollToTop');
+
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 100) {
+                    scrollToTopBtn.style.display = 'block';
+                } else {
+                    scrollToTopBtn.style.display = 'none';
+                }
+            });
+
+            scrollToTopBtn.addEventListener('click', () => {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
 
 </body>
 

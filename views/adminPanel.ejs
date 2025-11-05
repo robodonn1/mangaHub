@@ -40,15 +40,53 @@
                             <button type="submit">Удалить</button>
                         </form>
                         <button id="change"
-                            onclick="window.location.href=`/adminPanel/<%=badge.id%>/badge`">Изменить</button>
+                            onclick="window.location.href=`/adminPanel/badge/<%=badge.id%>`">Изменить</button>
                     </td>
                 </tr>
                 <% }) %>
         </tbody>
     </table>
 
-    <h1>Изменение бейджа</h1>
-    <% if(thingToChange){ %>
+    <table id="users">
+        <h1>Таблица пользователей</h1>
+        <thead>
+            <tr>
+                <th>Айди</th>
+                <th>Ник</th>
+                <th>Статус</th>
+                <th>Левел</th>
+                <th>прочитано глав</th>
+                <th>аватар</th>
+                <th>почта</th>
+                <th>пароль</th>
+                <th>действия</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% users.forEach(user=> { %>
+                <tr>
+                    <th><%=user.id%></th>
+                    <th><%=user.nickname%></th>
+                    <th><%=user.status.title%></th>
+                    <th><%=user.level%></th>
+                    <th><%=user.chaptersReaded%></th>
+                    <th><%=user.avatar%></th>
+                    <th><%=user.email%></th>
+                    <th><%=user.password%></th>
+                    <th>
+                        <form action="/deleteUser/<%=user.id%>" method="post">
+                            <button type="submit">Удалить</button>
+                        </form>
+                        <button id="change"
+                            onclick="window.location.href=`/adminPanel/user/<%=user.id%>`">Изменить</button>
+                    </th>
+                </tr>
+                <%})%>
+        </tbody>
+    </table>
+
+    <h1>Изменение <%=thingToChangeName%></h1>
+    <% if(thingToChangeName=="badge" ){ %>
         <form action="/changeBadge" method="post" style="display: flex; flex-direction: column; gap: 10px;">
             <input type="number" name="badgeId" id="" value="<%= thingToChange.id %>">
             <input type="text" name="badgeName" id="" value="<%=thingToChange.name%>">
@@ -56,7 +94,23 @@
             <input type="text" name="badgeType" id="" value="<%=  thingToChange.type %>">
             <button type="submit">Изменить</button>
         </form>
-        <% } %>
+        <% } else if (thingToChangeName=="user" ){ %>
+            <form action="/changeUser" method="post" style="display: flex; flex-direction: column; gap: 10px;">
+                <input type="number" name="userId" id="" value="<%= thingToChange.id %>">
+                <input type="text" name="userNickname" id="" value="<%=thingToChange.nickname%>">
+                <select name="userStatusId" id="">
+                    <option value="1" <%if(thingToChange.statusId == 1){%> selected <%}%>>Читатель</option>
+                    <option value="2" <%if(thingToChange.statusId == 2){%> selected <%}%>>Редактор</option>
+                    <option value="3" <%if(thingToChange.statusId == 3){%> selected <%}%>>Администратор</option>
+                </select>
+                <input type="number" name="userLevel" id="" value="<%=  thingToChange.level %>">
+                <input type="number" name="userChaptersReaded" id="" value="<%=  thingToChange.chaptersReaded %>">
+                <input type="text" name="userAvatar" id="" value="<%=  thingToChange.avatar %>">
+                <input type="text" name="userEmail" id="" value="<%=  thingToChange.email %>">
+                <input type="text" name="userPassword" id="" value="<%=  thingToChange.password %>">
+                <button type="submit">Изменить</button>
+            </form>
+            <%}%>
 </body>
 
 </html>

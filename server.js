@@ -26,7 +26,7 @@ const sequelize = new Sequelize({
 const connect = async () => {
     try {
         await sequelize.authenticate();
-        await sequelize.sync({ force: true });
+        await sequelize.sync({ force: false });
         console.log('true');
     } catch (e) {
         console.log('false', e);
@@ -335,7 +335,7 @@ const createSomeManga = async () => {
         await newManga.save();
         const addTag = await MangaTagToManga.create({
             mangaId: i + 1,
-            tagId: Math.floor(Math.random() * 7)
+            tagId: Math.floor(Math.random() * 7) + 1
         });
         await addTag.save();
     }
@@ -344,11 +344,11 @@ const createSomeManga = async () => {
 const startServer = async () => {
     await connect();
     await createSvyazi();
-    await createStatuses();
-    await createBadges();
-    await createMangaTags();
-    await createAdimAccaount();
-    await createSomeManga();
+    // await createStatuses();
+    // await createBadges();
+    // await createMangaTags();
+    // await createAdimAccaount();
+    // await createSomeManga();
 
     app.listen(PORT, () => {
         console.log('http://localhost:3000');
@@ -362,8 +362,33 @@ app.get('/', async (req, res) => {
     // res.sendFile(path.join(__dirname, 'public', 'index.html'));
 
     const curUser = req.session.user;
-    const mangasRead = await Manga.findAll({ order: sequelize.random(), limit: 15, include: { model: MangaTagToManga, as: 'tag', include: { model: MangaTag, as: 'tag', attributes: ['title'] } } })
-    const mangasBest = await Manga.findAll({ order: [['rate', 'DESC']], limit: 15, include: { model: MangaTagToManga, as: 'tag', include: { model: MangaTag, as: 'tag', attributes: ['title'] } } })
+
+    const mangasRead = await Manga.findAll({
+        order: sequelize.random(),
+        limit: 15,
+        include: [{
+            model: MangaTagToManga,
+            as: 'tag',
+            include: [{
+                model: MangaTag,
+                as: 'tag',
+            }]
+        }]
+    });
+
+    const mangasBest = await Manga.findAll({
+        order: [['rate', 'DESC']],
+        limit: 15,
+        include: [{
+            model: MangaTagToManga,
+            as: 'tag',
+            include: [{
+                model: MangaTag,
+                as: 'tag',
+            }]
+        }]
+    });
+
     const usersTop = await User.findAll({ order: [['level', 'DESC']], limit: 12 })
     // const mangasRecomended = []
     // const favoriteUserTags = await FavoriteUserManga.findAll({where: { userId: req.session.user ?? 0}, limit: 3, attributes: ''})
@@ -390,25 +415,41 @@ app.get('/profile', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'profile.html'))
 });
 
-app.get('/adminPanel/:id/:what', async (req, res) => {
+app.get('/adminPanel/:what/:id', async (req, res) => {
     if (!req.session.user) res.redirect('/');
     if (req.session.user.statusId != 3) res.redirect('/');
 
     const thingToChangeString = req.params.what;
     const thingId = req.params.id;
     let thingToChange;
+    let thingToChangeName;
 
     if (thingToChangeString == 'badge') {
+        thingToChangeName = 'badge';
         thingToChange = await Badge.findOne({
             where: {
                 id: thingId,
             }
         })
+    } else if (thingToChangeString == 'user') {
+        thingToChangeName = 'user';
+        thingToChange = await User.findOne({
+            where: {
+                id: thingId,
+            },
+        })
     }
 
     const badges = await Badge.findAll();
+    const users = await User.findAll({
+        include: {
+            model: Status,
+            as: 'status',
+            attributes: ['title'],
+        }
+    });
 
-    res.render('adminPanel', { badges, thingToChange });
+    res.render('adminPanel', { badges, users, thingToChange, thingToChangeName });
 });
 
 app.get('/publisherPanel', (req, res) => {
@@ -445,6 +486,7 @@ app.post('/registration', async (req, res) => {
             level: newUser.level,
             statusId: newUser.statusId,
             chaptersReaded: newUser.chaptersReaded,
+            avatar: newUser.avatar,
         };
 
         res.redirect('/');
@@ -469,6 +511,7 @@ app.post('/authorization', (req, res) => {
                     level: user.level,
                     statusId: user.statusId,
                     chaptersReaded: user.chaptersReaded,
+                    avatar: user.avatar
                 }
                 res.redirect('/')
             }
@@ -582,6 +625,21 @@ app.post('/deleteBadge/:id', async (req, res) => {
     }
 });
 
+app.post('/deleteUser/:id', async (req, res) => {
+    try {
+        const userId = req.params.id;
+
+        await User.destroy({
+            where: {
+                id: userId,
+            }
+        })
+        res.redirect('/adminPanel/0/0');
+    } catch (e) {
+        res.send(e);
+    }
+});
+
 app.post('/changeBadge', async (req, res) => {
     const { badgeId, badgeName, badgeTitle, badgeType } = req.body;
 
@@ -592,6 +650,26 @@ app.post('/changeBadge', async (req, res) => {
     }, {
         where: {
             id: badgeId,
+        }
+    })
+
+    res.redirect('/adminPanel/0/0')
+})
+
+app.post('/changeUser', async (req, res) => {
+    const { userId, userNickname, userStatusId, userLevel, userChaptersReaded, userAvatar, userEmail, userPassword } = req.body;
+
+    await User.update({
+        nickname: userNickname,
+        statusId: userStatusId,
+        level: userLevel,
+        chaptersReaded: userChaptersReaded,
+        avatar: userAvatar,
+        email: userEmail,
+        password: userPassword,
+    }, {
+        where: {
+            id: userId,
         }
     })
 

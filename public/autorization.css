@@ -1,0 +1,73 @@
+main {
+    width: calc(100% - 300px);
+    height: calc(100vh - 300px);
+    margin: 0 auto;
+}
+
+
+
+main>div {
+   
+    gap: 90px;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.sds>div>h1 {
+    text-align: center;
+    margin-top: 92px;
+    font-family: "Stick", sans-serif;
+    font-size: 45px;
+    font-style: normal;
+    color: rgba(246, 249, 250, 1);
+    width: fit-content;
+}
+
+.sds>div>hr {
+    margin-top: 10px;
+    border: 5px rgba(4, 66, 52, 1) solid;
+    border-radius: 8px;
+}
+
+.sds>form{
+    width: 708px;
+    display: flex;
+    flex-direction: column;
+ align-items: center;
+    gap: 20px;
+     text-decoration: none;
+}
+
+form>input{
+    width: 708px;
+    height: 60px;
+      padding: 6px 40px;
+    border-radius: 8px;
+    border: 2px rgba(246, 249, 250, 1) solid;
+    background-color: rgba(12, 56, 46, 0.2);
+    text-decoration: none;
+    font-family: "Mulish", sans-serif;
+    font-weight: normal;
+    color: rgba(246, 249, 250, 1);
+    font-style: normal;
+    font-size: 20px;
+}
+
+
+form>button{
+    width: 464px;
+    height: 60px;
+      padding: 6px 40px;
+    border-radius: 8px;
+    border: 2px rgba(246, 249, 250, 1) solid;
+    background-color: rgba(5, 94, 74, 1);
+    text-decoration: none;
+    font-family: "Mulish", sans-serif;
+    font-weight: normal;
+    color: rgba(246, 249, 250, 1);
+    font-style: normal;
+    font-size: 20px;    
+}

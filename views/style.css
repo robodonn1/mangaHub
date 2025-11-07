@@ -334,8 +334,7 @@ main {
 
 .usersTop {
     margin-top: 20px;
-    height: 334pxpx;
-    width: 100%;
+    height: 334px;
     display: flex;
     flex-direction: column;
     gap: 20px;

@@ -4,24 +4,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="./futAndHed.css">
+    <link rel="stylesheet" type="text/css" href="./autorization.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,200..1000;1,200..1000&display=swap"
+        rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,200..1000;1,200..1000&family=Stick&display=swap"
+        rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Marcellus&family=Play:wght@400;700&display=swap"
+        rel="stylesheet">
     <title>Авторизация</title>
 </head>
 
 <body>
+    <header>
+        <nav class="headLeft">
+            <a href="/">
+                <img src="img/logo.png" alt="">
+            </a>
 
-    <div>
-        <h1>Страница Авторизации</h1>
 
-        <form action="/authorization" method="post">
-            <input type="email" name="email" id="email" placeholder="Почта" required
-                pattern="/^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/">
-            <input type="password" name="password" id="password" placeholder="Пароль" required minlength="6"
-                maxlength="20">
-            <p id="error"></p>
-            <button id="sub" type="submit">Войти в аккаунт</button>
-        </form>
-    </div>
+    </header>
+    <main>
+        <div class="left-wall"></div>
+        <div class="right-wall"></div>
+        <div class="sds">
+            <div>
+                <h1>Вход в аккаунт</h1>
+                <hr>
+            </div>
 
+
+            <form action="/authorization" method="post">
+                <input type="email" name="email" id="email" placeholder="Почта" required
+                    pattern="/^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/">
+                <input type="password" name="password" id="password" placeholder="Пароль" required minlength="6"
+                    maxlength="20">
+                <p id="error"></p>
+                <a href="*">Забыли пароль?</a>
+                <button id="sub" type="submit">Войти в аккаунт</button>
+            </form>
+            <a href="registration.html">Нет аккаунта?</a>
+        </div>
+
+
+    </main>
+
+
+    <footer>
+        <div class="fotCont">
+            <div class="upFo">
+                <img src="img/logo.png" alt="">
+                <p>MangaHub</p>
+            </div>
+            <p> MangaHub © Все права защищены</p>
+        </div>
+    </footer>
+    <button id="scrollToTop" style="display: none;">↑</button>
+
+    <div id="scroll-overlay"></div>
+    <script src="./scrol.js"></script>
 </body>
 
 </html>

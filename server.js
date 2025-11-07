@@ -440,6 +440,21 @@ app.get('/adminPanel/:what/:id', async (req, res) => {
                 id: thingId,
             },
         })
+    } else if (thingToChangeString == 'manga') {
+        thingToChangeName = 'manga';
+        thingToChange = await Manga.findOne({
+            where: {
+                id: thingId,
+            },
+            include:{
+                model: MangaTagToManga,
+                as: 'tag',
+                include: {
+                    model: MangaTag,
+                    as: 'tag',
+                }
+            }
+        })
     }
 
     const badges = await Badge.findAll();
@@ -450,8 +465,19 @@ app.get('/adminPanel/:what/:id', async (req, res) => {
             attributes: ['title'],
         }
     });
+    const mangas = await Manga.findAll({
+        include: {
+            model: MangaTagToManga,
+            as: 'tag',
+            include: {
+                model: MangaTag,
+                as: "tag"
+            }
+        }
+    });
+    const tags = await MangaTag.findAll();
 
-    res.render('adminPanel', { badges, users, thingToChange, thingToChangeName });
+    res.render('adminPanel', { badges, users, thingToChange, thingToChangeName, mangas, tags });
 });
 
 app.get('/publisherPanel', (req, res) => {
@@ -677,6 +703,63 @@ app.post('/changeUser', async (req, res) => {
 
     res.redirect('/adminPanel/0/0')
 })
+
+app.post('/changeManga', async (req, res) => {
+    try {
+        const { mangaId, mangaTitle, mangaName, mangaDescription, mangaImgUrl, mangaRate, mangaTags } = req.body;
+
+        await Manga.update({
+            title: mangaTitle,
+            name: mangaName,
+            description: mangaDescription,
+            imgUrl: mangaImgUrl,
+            rate: mangaRate,
+        }, {
+            where: {
+                id: mangaId,
+            }
+        });
+
+        let tagIds = [];
+        if (mangaTags) {
+            tagIds = mangaTags.split(',').map(id => parseInt(id.trim())).filter(id => !isNaN(id));
+        }
+
+        const currentTags = await MangaTagToManga.findAll({
+            where: {
+                mangaId: mangaId,
+            }
+        });
+
+        const currentTagIds = currentTags.map(tag => tag.tagId);
+
+        const tagsToRemove = currentTagIds.filter(tagId => !tagIds.includes(tagId));
+        const tagsToAdd = tagIds.filter(tagId => !currentTagIds.includes(tagId));
+
+        if (tagsToRemove.length > 0) {
+            await MangaTagToManga.destroy({
+                where: {
+                    mangaId: mangaId,
+                    tagId: tagsToRemove,
+                }
+            });
+        }
+
+        if (tagsToAdd.length > 0) {
+            const tagRelations = tagsToAdd.map(tagId => ({
+                mangaId: parseInt(mangaId),
+                tagId: tagId
+            }));
+
+            await MangaTagToManga.bulkCreate(tagRelations);
+        }
+
+        res.redirect('/adminPanel/0/0');
+    } catch (error) {
+        console.error('Ошибка при обновлении манги:', error);
+        res.status(500).json({ error: 'Внутренняя ошибка сервера' });
+    }
+});
 
 //manga
 app.post('/createManga', async (req, res) => {

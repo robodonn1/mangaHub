@@ -4,6 +4,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="/admin.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,200..1000;1,200..1000&display=swap"
+        rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,200..1000;1,200..1000&family=Stick&display=swap"
+        rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=DotGothic16&family=Marcellus&family=Play:wght@400;700&display=swap"
+        rel="stylesheet">
     <title>Админ панель</title>
 </head>
 
@@ -65,14 +81,30 @@
         <tbody>
             <% users.forEach(user=> { %>
                 <tr>
-                    <th><%=user.id%></th>
-                    <th><%=user.nickname%></th>
-                    <th><%=user.status.title%></th>
-                    <th><%=user.level%></th>
-                    <th><%=user.chaptersReaded%></th>
-                    <th><%=user.avatar%></th>
-                    <th><%=user.email%></th>
-                    <th><%=user.password%></th>
+                    <th>
+                        <%=user.id%>
+                    </th>
+                    <th>
+                        <%=user.nickname%>
+                    </th>
+                    <th>
+                        <%=user.status.title%>
+                    </th>
+                    <th>
+                        <%=user.level%>
+                    </th>
+                    <th>
+                        <%=user.chaptersReaded%>
+                    </th>
+                    <th>
+                        <%=user.avatar%>
+                    </th>
+                    <th>
+                        <%=user.email%>
+                    </th>
+                    <th>
+                        <%=user.password%>
+                    </th>
                     <th>
                         <form action="/deleteUser/<%=user.id%>" method="post">
                             <button type="submit">Удалить</button>
@@ -85,7 +117,57 @@
         </tbody>
     </table>
 
-    <h1>Изменение <%=thingToChangeName%></h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Айди</th>
+                <th>Название</th>
+                <th>Переменная</th>
+                <th>Описание</th>
+                <th>юрлКартинки</th>
+                <th>Рейтинг</th>
+                <th>Теги</th>
+                <th>Действия</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% mangas.forEach(manga=> { %>
+                <tr>
+                    <th>
+                        <%= manga.id %>
+                    </th>
+                    <th>
+                        <%= manga.title %>
+                    </th>
+                    <th>
+                        <%= manga.name %>
+                    </th>
+                    <th>
+                        <%= manga.description %>
+                    </th>
+                    <th>
+                        <%= manga.imgUrl %>
+                    </th>
+                    <th>
+                        <%= manga.rate %>
+                    </th>
+                    <th>
+                        <%= manga.tag?.map(tag=> tag?.tag?.title).join(', ') %>
+                    </th>
+                    <th>
+                        <form action="/deleteManga/<%=manga.id%>" method="post">
+                            <button type="submit">Удалить</button>
+                        </form>
+                        <button id="change"
+                            onclick="window.location.href=`/adminPanel/manga/<%=manga.id%>`">Изменить</button>
+                    </th>
+                </tr>
+                <%})%>
+        </tbody>
+    </table>
+
+    <h1>Изменение <%=thingToChangeName%>
+    </h1>
     <% if(thingToChangeName=="badge" ){ %>
         <form action="/changeBadge" method="post" style="display: flex; flex-direction: column; gap: 10px;">
             <input type="number" name="badgeId" id="" value="<%= thingToChange.id %>">
@@ -99,9 +181,9 @@
                 <input type="number" name="userId" id="" value="<%= thingToChange.id %>">
                 <input type="text" name="userNickname" id="" value="<%=thingToChange.nickname%>">
                 <select name="userStatusId" id="">
-                    <option value="1" <%if(thingToChange.statusId == 1){%> selected <%}%>>Читатель</option>
-                    <option value="2" <%if(thingToChange.statusId == 2){%> selected <%}%>>Редактор</option>
-                    <option value="3" <%if(thingToChange.statusId == 3){%> selected <%}%>>Администратор</option>
+                    <option value="1" <%if(thingToChange.statusId==1){%> selected <%}%>>Читатель</option>
+                    <option value="2" <%if(thingToChange.statusId==2){%> selected <%}%>>Редактор</option>
+                    <option value="3" <%if(thingToChange.statusId==3){%> selected <%}%>>Администратор</option>
                 </select>
                 <input type="number" name="userLevel" id="" value="<%=  thingToChange.level %>">
                 <input type="number" name="userChaptersReaded" id="" value="<%=  thingToChange.chaptersReaded %>">
@@ -110,7 +192,118 @@
                 <input type="text" name="userPassword" id="" value="<%=  thingToChange.password %>">
                 <button type="submit">Изменить</button>
             </form>
-            <%}%>
+            <%} else if (thingToChangeName=="manga" ){%>
+                <form action="/changeManga" method="post" style="display: flex; flex-direction: column; gap: 10px;">
+                    <input type="number" name="mangaId" id="" value="<%= thingToChange.id %>">
+                    <input type="text" name="mangaTitle" id="" value="<%=thingToChange.title%>">
+                    <input type="text" name="mangaName" id="" value="<%=  thingToChange.name %>">
+                    <input type="text" name="mangaDecription" id="" value="<%=  thingToChange.description %>">
+                    <input type="text" name="mangaImgUrl" id="" value="<%=  thingToChange.imgUrl %>">
+                    <input type="text" name="mangaRate" id="" value="<%=  thingToChange.rate %>">
+
+                    <!-- Управление тегами -->
+                    <div style="display: flex; flex-direction: column; gap: 10px;">
+                        <div>
+                            <h3>Текущие теги манги (для удаления)</h3>
+                            <select id="currentTags" multiple style="width: 300px; height: 150px;">
+                                <% thingToChange.tag.forEach(tag=> { %>
+                                    <option value="<%= tag.tag.id %>">
+                                        <%= tag.tag.title %> (<%= tag.tag.type %>)
+                                    </option>
+                                    <% }) %>
+                            </select>
+                            <div>
+                                <button type="button" onclick="removeSelectedTags()">Удалить выбранные теги</button>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h3>Доступные теги (для добавления)</h3>
+                            <select id="availableTags" multiple style="width: 300px; height: 150px;">
+                                <% tags.forEach(tag=> { %>
+                                    <% const isAlreadyAdded=thingToChange.tag.some(t=> t.tag.id === tag.id); %>
+                                        <% if (!isAlreadyAdded) { %>
+                                            <option value="<%= tag.id %>">
+                                                <%= tag.title %> (<%= tag.type %>)
+                                            </option>
+                                            <% } %>
+                                                <% }) %>
+                            </select>
+                            <div>
+                                <button type="button" onclick="addSelectedTags()">Добавить выбранные теги</button>
+                            </div>
+                        </div>
+
+                        <input type="hidden" name="mangaTags" id="mangaTags"
+                            value="<%= thingToChange.tag.map(tag => tag.tag.id).join(',') %>">
+
+                        <div>
+                            <strong>Будут привязаны к манге:</strong>
+                            <div id="selectedTagsList" style="border: 1px solid #ccc; padding: 10px; min-height: 50px;">
+                                <% thingToChange.tag.forEach(tag=> { %>
+                                    <span
+                                        style="display: inline-block; background: #eee; padding: 5px; margin: 2px; border-radius: 3px;">
+                                        <%= tag.tag.title %>
+                                    </span>
+                                    <% }) %>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit">Изменить</button>
+                </form>
+
+                <script>
+                    function updateHiddenField() {
+                        const currentTags = Array.from(document.getElementById('currentTags').options);
+                        const tagIds = currentTags.map(option => option.value);
+                        document.getElementById('mangaTags').value = tagIds.join(',');
+
+                        const selectedTagsList = document.getElementById('selectedTagsList');
+                        selectedTagsList.innerHTML = '';
+                        currentTags.forEach(option => {
+                            const span = document.createElement('span');
+                            span.style.display = 'inline-block';
+                            span.style.background = '#eee';
+                            span.style.padding = '5px';
+                            span.style.margin = '2px';
+                            span.style.borderRadius = '3px';
+                            span.textContent = option.textContent.split(' (')[0];
+                            selectedTagsList.appendChild(span);
+                        });
+                    }
+
+                    function removeSelectedTags() {
+                        const currentTagsSelect = document.getElementById('currentTags');
+                        const availableTagsSelect = document.getElementById('availableTags');
+                        const selectedOptions = Array.from(currentTagsSelect.selectedOptions);
+
+                        selectedOptions.forEach(option => {
+                            currentTagsSelect.removeChild(option);
+                            availableTagsSelect.appendChild(option);
+                        });
+
+                        updateHiddenField();
+                    }
+
+                    function addSelectedTags() {
+                        const currentTagsSelect = document.getElementById('currentTags');
+                        const availableTagsSelect = document.getElementById('availableTags');
+                        const selectedOptions = Array.from(availableTagsSelect.selectedOptions);
+
+                        selectedOptions.forEach(option => {
+                            availableTagsSelect.removeChild(option);
+                            currentTagsSelect.appendChild(option);
+                        });
+
+                        updateHiddenField();
+                    }
+
+                    document.addEventListener('DOMContentLoaded', function () {
+                        updateHiddenField();
+                    });
+                </script>
+                <%}%>
 </body>
 
 </html>

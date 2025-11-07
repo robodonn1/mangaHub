@@ -85,7 +85,7 @@
                                 <%= manga.title %>
                             </h2>
                             <p>
-                                <%= manga.tag[0].tag %>
+                                <%= manga.tag?.map(tag=> tag?.tag?.title).join(', ') %>
                             </p>
                         </div>
                     </div>
@@ -98,7 +98,7 @@
                                         <%= manga.title %>
                                     </h2>
                                     <p>
-                                        <%= manga.tag[0].tag %>
+                                        <%= manga.tag?.map(tag=> tag?.tag?.title).join(', ') %>
                                     </p>
                                 </div>
                             </div>
@@ -111,7 +111,7 @@
                                                 <%= manga.title %>
                                             </h2>
                                             <p>
-                                                <% manga.tag[0].tag; %>
+                                                <% manga.tag?.map(tag=> tag?.tag?.title).join(', ') %>
                                             </p>
                                         </div>
                                     </div>
@@ -133,7 +133,7 @@
                                 <%= manga.title %>
                             </h2>
                             <p>
-                                <%= manga.tag[0].tag %>
+                                <%= manga.tag?.map(tag=> tag?.tag?.title).join(', ') %>
                             </p>
                         </div>
                     </div>
@@ -146,7 +146,7 @@
                                         <%= manga.title %>
                                     </h2>
                                     <p>
-                                        <%= manga.tag[0].tag %>
+                                        <%= manga.tag?.map(tag=> tag?.tag?.title).join(', ') %>
                                     </p>
                                 </div>
                             </div>
@@ -159,7 +159,7 @@
                                                 <%= manga.title %>
                                             </h2>
                                             <p>
-                                                <%= manga.tag[0].tag %>
+                                                <%= manga.tag?.map(tag=> tag?.tag?.title).join(', ') %>
                                             </p>
                                         </div>
                                     </div>
@@ -205,7 +205,7 @@
                                 <%= manga.title %>
                             </h2>
                             <p>
-                                <%= manga.tag[0].tag %>
+                                <%= manga.tag?.map(tag=> tag?.tag?.title).join(', ') %>
                             </p>
                         </div>
                     </div>
@@ -218,7 +218,7 @@
                                         <%= manga.title %>
                                     </h2>
                                     <p>
-                                        <%= manga.tag[0].tag %>
+                                        <%= manga.tag?.map(tag=> tag?.tag?.title).join(', ') %>
                                     </p>
                                 </div>
                             </div>
@@ -231,7 +231,7 @@
                                                 <%= manga.title %>
                                             </h2>
                                             <p>
-                                                <%= manga.tag[0].tag %>
+                                                <%= manga.tag?.map(tag=> tag?.tag?.title).join(', ') %>
                                             </p>
                                         </div>
                                     </div>
@@ -264,7 +264,7 @@
                 // Wheel support
                 container.addEventListener('wheel', (e) => {
                     e.preventDefault();
-                    container.scrollLeft += e.deltaY * 3; // adjust speed
+                    container.scrollLeft += e.deltaY * 50; // adjust speed
                 });
             });
 
@@ -288,7 +288,7 @@
                     clearTimeout(scrollTimeout);
                     scrollTimeout = setTimeout(() => {
                         snapToCenter(container);
-                    }, 40); // Wait 40ms after scroll stops
+                    }, 500); // Wait 40ms after scroll stops
                 });
             });
 

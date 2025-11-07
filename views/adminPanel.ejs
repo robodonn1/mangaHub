@@ -81,37 +81,37 @@
         <tbody>
             <% users.forEach(user=> { %>
                 <tr>
-                    <th>
+                    <td>
                         <%=user.id%>
-                    </th>
-                    <th>
+                    </td>
+                    <td>
                         <%=user.nickname%>
-                    </th>
-                    <th>
+                    </td>
+                    <td>
                         <%=user.status.title%>
-                    </th>
-                    <th>
+                    </td>
+                    <td>
                         <%=user.level%>
-                    </th>
-                    <th>
+                    </td>
+                    <td>
                         <%=user.chaptersReaded%>
-                    </th>
-                    <th>
+                    </td>
+                    <td>
                         <%=user.avatar%>
-                    </th>
-                    <th>
+                    </td>
+                    <td>
                         <%=user.email%>
-                    </th>
-                    <th>
+                    </td>
+                    <td>
                         <%=user.password%>
-                    </th>
-                    <th>
+                    </td>
+                    <td>
                         <form action="/deleteUser/<%=user.id%>" method="post">
                             <button type="submit">Удалить</button>
                         </form>
                         <button id="change"
                             onclick="window.location.href=`/adminPanel/user/<%=user.id%>`">Изменить</button>
-                    </th>
+                    </td>
                 </tr>
                 <%})%>
         </tbody>
@@ -133,34 +133,34 @@
         <tbody>
             <% mangas.forEach(manga=> { %>
                 <tr>
-                    <th>
+                    <td>
                         <%= manga.id %>
-                    </th>
-                    <th>
+                    </td>
+                    <td>
                         <%= manga.title %>
-                    </th>
-                    <th>
+                    </td>
+                    <td>
                         <%= manga.name %>
-                    </th>
-                    <th>
+                    </td>
+                    <td>
                         <%= manga.description %>
-                    </th>
-                    <th>
+                    </td>
+                    <td>
                         <%= manga.imgUrl %>
-                    </th>
-                    <th>
+                    </td>
+                    <td>
                         <%= manga.rate %>
-                    </th>
-                    <th>
+                    </td>
+                    <td>
                         <%= manga.tag?.map(tag=> tag?.tag?.title).join(', ') %>
-                    </th>
-                    <th>
+                    </td>
+                    <td>
                         <form action="/deleteManga/<%=manga.id%>" method="post">
                             <button type="submit">Удалить</button>
                         </form>
                         <button id="change"
                             onclick="window.location.href=`/adminPanel/manga/<%=manga.id%>`">Изменить</button>
-                    </th>
+                    </td>
                 </tr>
                 <%})%>
         </tbody>
